@@ -1,0 +1,38 @@
+parameters:
+  - name: environment
+    type: string
+    values:
+      - staging
+      - production
+  - name: awsServiceConnection
+    type: string
+  - name: changedSites
+    type: string # JSON array
+  - name: awsRegion
+    type: string
+    default: "us-east-1"
+  - name: condition
+    type: string
+    default: "succeeded()"
+
+steps:
+  - task: AWSShellScript@1
+    displayName: "Deploy + invalidate (${{ parameters.environment }})"
+    condition: ${{ parameters.condition }}
+    inputs:
+      awsCredentials: ${{ parameters.awsServiceConnection }}
+      regionName: ${{ parameters.awsRegion }}
+      scriptType: "inline"
+      inlineScript: |
+        set -euo pipefail
+        echo "Deploying to ${{ parameters.environment }}: $CHANGED_SITES"
+        SITES=$(echo "$CHANGED_SITES" | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>JSON.parse(d).forEach(s=>console.log(s)))')
+        if [ -z "$SITES" ]; then echo "No sites to deploy."; exit 0; fi
+        for site in $SITES; do
+          echo "::group:: Deploy $site -> ${{ parameters.environment }}"
+          node pipelines/scripts/deploy-site.js --site "$site" --env "${{ parameters.environment }}"
+          node pipelines/scripts/invalidate-cloudfront.js --site "$site" --env "${{ parameters.environment }}"
+          echo "::endgroup::"
+        done
+    env:
+      CHANGED_SITES: ${{ parameters.changedSites }}

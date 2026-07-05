@@ -1,0 +1,117 @@
+trigger:
+  branches:
+    include:
+      - master
+      - develop
+  paths:
+    include:
+      - sites/**
+      - shared/**
+      - config/sites.json
+      - pipelines/**
+
+pr:
+  branches:
+    include:
+      - master
+      - develop
+  paths:
+    include:
+      - sites/**
+      - shared/**
+      - config/sites.json
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  awsServiceConnection: "aws-static-sites"
+  awsRegion: "us-east-1"
+  isDevelop: $[ eq(variables['Build.SourceBranch'], 'refs/heads/develop') ]
+  isMaster: $[ eq(variables['Build.SourceBranch'], 'refs/heads/master') ]
+
+stages:
+  # ---------------------------------------------------------------------------
+  - stage: DetectChanges
+    displayName: "Detect changed sites"
+    jobs:
+      - job: detect
+        displayName: "Detect changes"
+        steps:
+          - checkout: self
+            fetchDepth: 0 # full history so we can diff against base/previous commit
+
+          - template: templates/setup.yml
+
+          - script: node pipelines/scripts/validate-config.js
+            displayName: "Validate config/sites.json"
+
+          - script: node pipelines/scripts/detect-changes.js
+            name: detectStep
+            displayName: "Detect changed sites"
+
+  - stage: StagingCI
+    displayName: "Validate, build & deploy to staging (develop)"
+    dependsOn: DetectChanges
+    condition: and(succeeded(), ne(dependencies.DetectChanges.outputs['detect.detectStep.changedSites'], '[]'))
+    variables:
+      changedSites: $[ stageDependencies.DetectChanges.detect.outputs['detectStep.changedSites'] ]
+    jobs:
+      - job: staging
+        displayName: "Staging pipeline"
+        steps:
+          - checkout: self
+            fetchDepth: 1
+
+          - template: templates/setup.yml
+
+          - template: templates/validate.yml
+            parameters:
+              changedSites: $(changedSites)
+
+          - template: templates/build.yml
+            parameters:
+              changedSites: $(changedSites)
+
+          - template: templates/deploy.yml
+            parameters:
+              environment: staging
+              awsServiceConnection: $(awsServiceConnection)
+              awsRegion: $(awsRegion)
+              changedSites: $(changedSites)
+              condition: eq(variables.isDevelop, true)
+
+  - stage: ProductionCD
+    displayName: "Deploy to production (master, manual approval)"
+    dependsOn:
+      - DetectChanges
+      - StagingCI
+    condition: >
+      and(succeeded(),
+          eq(variables.isMaster, true),
+          ne(dependencies.DetectChanges.outputs['detect.detectStep.changedSites'], '[]'))
+    variables:
+      changedSites: $[ stageDependencies.DetectChanges.detect.outputs['detectStep.changedSites'] ]
+    jobs:
+      - deployment: production
+        displayName: "Deploy to production"
+        environment: "production"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                  fetchDepth: 1
+
+                - template: templates/setup.yml
+
+                - template: templates/build.yml
+                  parameters:
+                    changedSites: $(changedSites)
+
+                - template: templates/deploy.yml
+                  parameters:
+                    environment: production
+                    awsServiceConnection: $(awsServiceConnection)
+                    awsRegion: $(awsRegion)
+                    changedSites: $(changedSites)

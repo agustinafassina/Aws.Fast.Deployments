@@ -1,0 +1,20 @@
+parameters:
+  - name: changedSites
+    type: string # JSON array, e.g. '["example-site"]'
+
+steps:
+  - bash: |
+      set -euo pipefail
+      echo "Validating sites: $CHANGED_SITES"
+      SITES=$(echo "$CHANGED_SITES" | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>JSON.parse(d).forEach(s=>console.log(s)))')
+      if [ -z "$SITES" ]; then echo "No sites to validate."; exit 0; fi
+      for site in $SITES; do
+        echo "::group:: Lint $site"
+        npx htmlhint "sites/$site/src/**/*.html" || exit 1
+        npx stylelint "sites/$site/src/**/*.css" || exit 1
+        npx eslint "sites/$site/src/**/*.js" || exit 1
+        echo "::endgroup::"
+      done
+    displayName: "Lint changed sites"
+    env:
+      CHANGED_SITES: ${{ parameters.changedSites }}

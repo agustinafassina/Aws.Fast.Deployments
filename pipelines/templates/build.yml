@@ -1,0 +1,18 @@
+parameters:
+  - name: changedSites
+    type: string # JSON array
+
+steps:
+  - bash: |
+      set -euo pipefail
+      echo "Building sites: $CHANGED_SITES"
+      SITES=$(echo "$CHANGED_SITES" | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>JSON.parse(d).forEach(s=>console.log(s)))')
+      if [ -z "$SITES" ]; then echo "No sites to build."; exit 0; fi
+      for site in $SITES; do
+        echo "::group:: Build $site"
+        node pipelines/scripts/build-site.js --site "$site"
+        echo "::endgroup::"
+      done
+    displayName: "Build changed sites"
+    env:
+      CHANGED_SITES: ${{ parameters.changedSites }}

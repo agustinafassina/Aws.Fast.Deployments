@@ -1,0 +1,13 @@
+parameters:
+  - name: nodeVersion
+    type: string
+    default: "18.x"
+
+steps:
+  - task: NodeTool@0
+    displayName: "Use Node ${{ parameters.nodeVersion }}"
+    inputs:
+      versionSpec: ${{ parameters.nodeVersion }}
+
+  - script: npm ci
+    displayName: "Install dependencies (npm ci)"

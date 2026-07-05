@@ -1,0 +1,26 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #1e3a8a, #0ea5e9);
+  color: #fff;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 6vw, 4rem);
+}
+
+.env-badge {
+  margin-top: 1rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
