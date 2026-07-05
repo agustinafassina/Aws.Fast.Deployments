@@ -1,0 +1,50 @@
+{
+  "$schema": "./sites.schema.json",
+  "defaults": {
+    "buildCommand": "",
+    "outputDir": "src",
+    "awsRegion": "us-east-1"
+  },
+  "sites": [
+    {
+      "name": "example-site",
+      "displayName": "Example Landing Page",
+      "description": "Reference static site used as the boilerplate template.",
+      "sourceDir": "sites/example-site",
+      "outputDir": "dist",
+      "buildCommand": "node ../../pipelines/scripts/build-site.js --site example-site",
+      "environments": {
+        "staging": {
+          "bucket": "example-site-staging-REPLACE-ME",
+          "distributionId": "REPLACE_WITH_STAGING_DIST_ID",
+          "domain": "staging.example.com"
+        },
+        "production": {
+          "bucket": "example-site-prod-REPLACE-ME",
+          "distributionId": "REPLACE_WITH_PROD_DIST_ID",
+          "domain": "www.example.com"
+        }
+      }
+    },
+    {
+      "name": "marketing-site",
+      "displayName": "Marketing Site",
+      "description": "Second sample site demonstrating multi-site scaling.",
+      "sourceDir": "sites/marketing-site",
+      "outputDir": "dist",
+      "buildCommand": "node ../../pipelines/scripts/build-site.js --site marketing-site",
+      "environments": {
+        "staging": {
+          "bucket": "marketing-site-staging-REPLACE-ME",
+          "distributionId": "REPLACE_WITH_STAGING_DIST_ID",
+          "domain": "staging-marketing.example.com"
+        },
+        "production": {
+          "bucket": "marketing-site-prod-REPLACE-ME",
+          "distributionId": "REPLACE_WITH_PROD_DIST_ID",
+          "domain": "marketing.example.com"
+        }
+      }
+    }
+  ]
+}

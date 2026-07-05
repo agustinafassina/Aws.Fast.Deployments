@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Static sites configuration",
+  "description": "Central registry that maps each static site to its AWS S3 buckets and CloudFront distributions per environment.",
+  "type": "object",
+  "required": ["sites"],
+  "properties": {
+    "defaults": {
+      "type": "object",
+      "description": "Values applied to every site unless overridden at the site level.",
+      "properties": {
+        "buildCommand": { "type": "string" },
+        "outputDir": { "type": "string" },
+        "awsRegion": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "sites": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/site" }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "site": {
+      "type": "object",
+      "required": ["name", "sourceDir", "environments"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Internal identifier. Must match the folder name under sites/. Lowercase, kebab-case.",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "displayName": { "type": "string" },
+        "description": { "type": "string" },
+        "sourceDir": {
+          "type": "string",
+          "description": "Path to the site folder relative to the repository root, e.g. sites/example-site."
+        },
+        "outputDir": {
+          "type": "string",
+          "description": "Directory (relative to sourceDir) that contains the deployable artifacts after build."
+        },
+        "buildCommand": {
+          "type": "string",
+          "description": "Shell command to build the site. Empty string means 'no build, deploy sourceDir/src directly'."
+        },
+        "awsRegion": { "type": "string" },
+        "environments": {
+          "type": "object",
+          "required": ["staging", "production"],
+          "properties": {
+            "staging": { "$ref": "#/definitions/environment" },
+            "production": { "$ref": "#/definitions/environment" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "environment": {
+      "type": "object",
+      "required": ["bucket", "distributionId"],
+      "properties": {
+        "bucket": {
+          "type": "string",
+          "description": "S3 bucket name that hosts this site for this environment."
+        },
+        "distributionId": {
+          "type": "string",
+          "description": "CloudFront distribution ID used to serve and invalidate this site."
+        },
+        "domain": {
+          "type": "string",
+          "description": "Public domain (used for docs / alternate domain names)."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

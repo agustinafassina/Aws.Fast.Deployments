@@ -1,0 +1,53 @@
+settings.json
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+build/
+**/dist/
+**/build/
+.cache/
+
+# Environment / secrets  (NEVER commit real credentials)
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+credentials
+aws-credentials*
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+!*.tfvars.example
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.lock.hcl.bak
+tfplan
+*.tfplan
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+
+# Pipeline artifacts
+.artifacts/
+changed-sites.json

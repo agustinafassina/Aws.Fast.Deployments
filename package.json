@@ -1,0 +1,37 @@
+{
+  "name": "aws-fast-deployments",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo boilerplate for deploying multiple static sites to AWS (S3 + CloudFront) via Azure DevOps CI/CD. Source lives in Bitbucket.",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "detect": "node pipelines/scripts/detect-changes.js",
+    "deploy": "node pipelines/scripts/deploy-site.js",
+    "invalidate": "node pipelines/scripts/invalidate-cloudfront.js",
+    "create-site": "node pipelines/scripts/create-site.js",
+    "validate:config": "node pipelines/scripts/validate-config.js",
+    "lint": "npm run lint:html && npm run lint:css && npm run lint:js",
+    "lint:html": "htmlhint \"sites/**/src/**/*.html\"",
+    "lint:css": "stylelint \"sites/**/src/**/*.css\" \"shared/**/*.css\"",
+    "lint:js": "eslint \"sites/**/src/**/*.js\" \"shared/**/*.js\"",
+    "build:all": "node pipelines/scripts/build-site.js --all"
+  },
+  "devDependencies": {
+    "clean-css-cli": "^5.6.3",
+    "eslint": "^8.57.0",
+    "htmlhint": "^1.1.4",
+    "html-minifier-terser": "^7.2.0",
+    "stylelint": "^16.6.1",
+    "stylelint-config-standard": "^36.0.0",
+    "terser": "^5.31.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-cloudfront": "^3.600.0",
+    "@aws-sdk/client-s3": "^3.600.0",
+    "@aws-sdk/lib-storage": "^3.600.0",
+    "mime-types": "^2.1.35"
+  }
+}
