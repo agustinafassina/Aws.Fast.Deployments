@@ -1,4 +1,4 @@
-# `config/` — Central site registry
+# ⚙️ `config/` — Central site registry
 
 **Language / Idioma:** [English](#english) · [Español](#español)
 
@@ -72,7 +72,7 @@ the Azure DevOps AWS service connection or local environment variables.
 
 <a id="español"></a>
 
-# `config/` — Registro central de sitios
+# ⚙️ `config/` — Registro central de sitios
 
 **Idioma / Language:** [Español](#español) · [English](#english)
 

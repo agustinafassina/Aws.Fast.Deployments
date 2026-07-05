@@ -1,4 +1,4 @@
-# `docs/` — Guides & checklists
+# 📚 `docs/` — Guides & checklists
 
 **Language / Idioma:** [English](#english) · [Español](#español)
 
@@ -11,6 +11,8 @@
 | [`workflow.png`](workflow.png) | CI/CD workflow diagram (Bitbucket → Azure DevOps → AWS). |
 
 <a id="español"></a>
+
+# 📚 `docs/` — Guías y checklists
 
 | Documento | Propósito |
 |-----------|-----------|

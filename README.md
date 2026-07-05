@@ -1,4 +1,4 @@
-# AWS Fast Deployments
+# 🚀 AWS Fast Deployments
 
 **Language / Idioma:** [English](#english) · [Español](#español)
 
@@ -257,7 +257,7 @@ If you expect **50+ sites within 1–2 years**, plan for that evolution early
 
 <a id="español"></a>
 
-# AWS Fast Deployments (Español)
+# 🚀 AWS Fast Deployments (Español)
 
 **Idioma / Language:** [Español](#español) · [English](#english)
 

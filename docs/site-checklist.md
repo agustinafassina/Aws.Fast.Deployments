@@ -83,7 +83,7 @@ Application / HTML (detail in [`html-guidelines.md`](html-guidelines.md)):
 
 - [ ] `npm run create-site --name <kebab-name> …`
 - [ ] Fill site `README.md` (purpose, owner, maintainer, contacts, version).
-- [ ] Add Terraform tfvars entries (staging + production) and `terraform apply`.
+- [ ] Add entries to `staging.tfvars` and `production.tfvars`, then `terraform apply` per workspace.
 - [ ] Paste bucket + distribution IDs into `config/sites.json`.
 - [ ] Confirm SNS subscription for WAF alarms (if `waf_alarm_email` is set).
 - [ ] Push to `develop` → verify staging → merge to `master` → approve production.
@@ -164,7 +164,7 @@ Aplicación / HTML (detalle en [`html-guidelines.md`](html-guidelines.md)):
 
 - [ ] `npm run create-site --name <kebab-nombre> …`
 - [ ] Completar `README.md` del sitio (propósito, owner, maintainer, contactos, versión).
-- [ ] Agregar entradas tfvars (staging + production) y `terraform apply`.
+- [ ] Agregar entradas en `staging.tfvars` y `production.tfvars`, luego `terraform apply` por workspace.
 - [ ] Pegar bucket + distribution IDs en `config/sites.json`.
 - [ ] Confirmar suscripción SNS para alarmas WAF (si `waf_alarm_email` está configurado).
 - [ ] Push a `develop` → verificar staging → merge a `master` → aprobar producción.
