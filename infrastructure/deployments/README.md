@@ -46,8 +46,8 @@ terraform apply -var-file=staging.tfvars
 
 | File | Purpose |
 |------|---------|
-| `locals.tf` | Tags + `environment = terraform.workspace` |
-| `terraform.tfvars` | Shared: `project_name`, `additional_tags`, `aws_region` |
+| `locals.tf` | Naming (`tf-{env}-{project}-…`) + tags + `environment = terraform.workspace` |
+| `terraform.tfvars` | Shared: `project_name`, `name_suffix`, `additional_tags`, `aws_region` |
 | `staging.tfvars` | Sites + `waf_alarm_email` for **staging** |
 | `production.tfvars` | Sites + `waf_alarm_email` for **production** |
 
